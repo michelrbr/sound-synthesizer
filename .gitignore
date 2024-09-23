@@ -1,0 +1,53 @@
+# Gradle files
+.gradle/
+build/
+*/build/
+*.iml
+.gradle/
+local.properties
+
+# Android Studio files
+.idea/
+.idea/caches/
+.idea/libraries/
+.idea/modules.xml
+.idea/workspace.xml
+.idea/misc.xml
+
+# User-specific configurations
+*.jks
+*.keystore
+*.properties
+*.log
+*.orig
+*.swp
+*.swo
+*.DS_Store
+
+# Android specific files
+*.apk
+*.ap_
+*.dex
+*.class
+*.jar
+*.war
+*.hprof
+*.so
+
+# Kotlin specific files
+*.kt.iml
+
+# Generated files
+generated/
+gen/
+out/
+build/
+
+# Misc
+captures/
+*.log
+*.hprof
+*.tmp
+
+# Mac system files
+.DS_Store
