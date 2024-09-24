@@ -1,4 +1,4 @@
-package br.com.michel.soundsynthesizer.ui.theme
+package br.com.michel.soundsynthesizer.presentation.theme
 
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.ui.unit.Dp

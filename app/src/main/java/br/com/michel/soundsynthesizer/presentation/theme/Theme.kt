@@ -1,4 +1,4 @@
-package br.com.michel.soundsynthesizer.ui.theme
+package br.com.michel.soundsynthesizer.presentation.theme
 
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
