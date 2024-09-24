@@ -36,6 +36,6 @@ fun SoundSynthesizerApp() {
 
 @PreviewLightDark
 @Composable
-fun previewApp() {
+fun PreviewApp() {
     SoundSynthesizerApp()
 }
