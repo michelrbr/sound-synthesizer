@@ -1,3 +1,13 @@
 <resources>
     <string name="app_name">Sound Synthesizer</string>
+    <string name="play_content_description">play</string>
+    <string name="stop_content_description">stop</string>
+
+    <string name="button_label_sine">Sine</string>
+    <string name="button_label_triangle">Triangle</string>
+    <string name="button_label_square">Square</string>
+    <string name="button_label_saw">Saw</string>
+
+    <string name="slider_label_frequency">Frequency: %4.0f Hz</string>
+    <string name="slider_label_volume">Volume: %2.0f</string>
 </resources>
