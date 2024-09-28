@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.compose.compiler)
 }
 
 android {
@@ -38,6 +39,8 @@ android {
     }
     buildFeatures {
         compose = true
+        // From AGP 8 on, it's required to enable buildConfig to have access to BuildConfig.DEBUG
+        buildConfig = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.1"
@@ -61,6 +64,11 @@ dependencies {
     implementation(libs.androidx.material3)
     // Extended icons
     implementation(libs.androidx.material.icons.extented)
+
+    //Logging
+    implementation(libs.timber)
+
+    // Testing
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
