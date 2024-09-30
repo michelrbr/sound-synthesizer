@@ -28,7 +28,7 @@ fun SynthesizerSlider(
         label?.let {
             Text(
                 modifier = Modifier.padding(start = AppTheme.spacing.small),
-                text = String.format(it, value)
+                text = it
             )
         }
 

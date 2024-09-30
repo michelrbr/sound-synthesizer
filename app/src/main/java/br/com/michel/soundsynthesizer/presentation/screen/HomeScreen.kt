@@ -5,66 +5,60 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.PlayArrow
-import androidx.compose.material.icons.filled.Stop
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewLightDark
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import br.com.michel.soundsynthesizer.presentation.screen.component.SynthesizerSlider
-import br.com.michel.soundsynthesizer.presentation.screen.component.SynthesizerSoundSelection
+import br.com.michel.soundsynthesizer.presentation.screen.component.WavetableSelection
 import br.com.michel.soundsynthesizer.presentation.theme.AppTheme
 import br.com.michel.soundsynthesizer.presentation.theme.SoundSynthesizerTheme
 import br.com.michel.soundsynthesizer.presentation.theme.spacing
-import com.michel.soundsynthesizer.R
 
 @Composable
 fun HomeScreen(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    viewModel: HomeViewModel = hiltViewModel()
 ) {
     Column(
         modifier = modifier.padding(horizontal = AppTheme.spacing.normal),
         verticalArrangement = Arrangement.Center
     ) {
-        SynthesizerSoundSelection(
+        val wavetableState by viewModel.wavetableStates.collectAsStateWithLifecycle()
+        val frequencyState by viewModel.frequencyState.collectAsStateWithLifecycle()
+        val volumeState by viewModel.volumeState.collectAsStateWithLifecycle()
+        val playState by viewModel.playState.collectAsStateWithLifecycle()
+
+        WavetableSelection(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = AppTheme.spacing.extraLarge)
-        ) { println("Sound selected: $it") }
+                .padding(bottom = AppTheme.spacing.extraLarge),
+            wavetables = wavetableState,
+            onSoundSelected = viewModel::setWavetable
+        )
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
             SynthesizerSlider(
                 modifier = Modifier.weight(1F),
-                label = stringResource(R.string.slider_label_frequency),
+                label = frequencyState.label,
                 range = 40F..3000F,
-                initialValue = 1000F
-            ) { println("Frequency: $it") }
+                initialValue = frequencyState.defaultValue,
+                onValueChange = viewModel::setFrequency
+            )
 
             SynthesizerSlider(
                 modifier = Modifier.weight(1F),
-                label = stringResource(R.string.slider_label_volume),
+                label = volumeState.label,
                 range = 1F..100F,
-                initialValue = 50F
-            ) { println("Volume: $it") }
-        }
-
-        var playProps by remember {
-            mutableStateOf(
-                ButtonProperties(
-                    name = "Play",
-                    icon = Icons.Filled.PlayArrow
-                )
+                initialValue = volumeState.defaultValue,
+                onValueChange = viewModel::setVolume
             )
         }
 
@@ -74,27 +68,16 @@ fun HomeScreen(
                 .padding(
                     vertical = AppTheme.spacing.large
                 ),
-            onClick = {
-                if (playProps.name == "Play") {
-                    playProps = playProps.copy(name = "Stop", icon = Icons.Filled.Stop)
-                } else {
-                    playProps = playProps.copy(name = "Play", icon = Icons.Filled.PlayArrow)
-                }
-            },
+            onClick = viewModel::togglePayStop,
             colors = ButtonDefaults.buttonColors(AppTheme.colorScheme.primary)
         ) {
             Icon(
-                imageVector = playProps.icon,
-                contentDescription = playProps.name
+                imageVector = playState.icon,
+                contentDescription = playState.contentDescription
             )
         }
     }
 }
-
-private data class ButtonProperties(
-    val name: String,
-    val icon: ImageVector
-)
 
 @PreviewLightDark
 @Composable
