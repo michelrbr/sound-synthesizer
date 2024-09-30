@@ -2,6 +2,8 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.hilt)
+    alias(libs.plugins.kapt)
 }
 
 android {
@@ -66,8 +68,17 @@ dependencies {
     // Extended icons
     implementation(libs.androidx.material.icons.extented)
 
-    //Logging
+    // Dependency Inject
+    implementation(libs.hilt.android)
+    implementation(libs.androidx.hilt.compose)
+    kapt(libs.hilt.compiler)
+
+    // Logging
     implementation(libs.timber)
+
+    // Debug
+    debugImplementation(libs.androidx.ui.tooling)
+    debugImplementation(libs.androidx.ui.test.manifest)
 
     // Unit Testing
     testImplementation(libs.mockk.agent)
@@ -80,8 +91,8 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)
+}
 
-    // Debug
-    debugImplementation(libs.androidx.ui.tooling)
-    debugImplementation(libs.androidx.ui.test.manifest)
+kapt {
+    correctErrorTypes = true
 }
