@@ -12,6 +12,7 @@ import br.com.michel.soundsynthesizer.presentation.screen.model.PlayButtonState
 import br.com.michel.soundsynthesizer.presentation.screen.model.SliderState
 import br.com.michel.soundsynthesizer.presentation.screen.model.WavetableState
 import com.michel.soundsynthesizer.R
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -20,8 +21,10 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
+import javax.inject.Inject
 
-class HomeViewModel(
+@HiltViewModel
+class HomeViewModel @Inject constructor(
     private val dispatcherProvider: CoroutineDispatcherProvider,
     private val resources: ResourcesProvider
 ): ViewModel() {
