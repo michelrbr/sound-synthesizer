@@ -19,8 +19,40 @@ jobs:
           java-version: 17
           cache: 'gradle'
 
+      - name: Download Android SDK
+        uses: android-actions/setup-android@v3
+        with:
+            api-level: 34
+            build-tools: 34.0.0
+            ndk: 27.0.12077973
+
       - name: Grant execute permission for Gradlew
         run: chmod +x gradlew
 
+      - name: Build with Gradle
+        run: ./gradlew build
+
       - name: Run Unit Tests
         run: ./gradlew test
+
+      - name: Set up Emulator
+        run: |
+          sudo apt-get update
+          sudo apt-get install -yq libvirt-bin qemu-kvm
+          echo "hw.cpu.ncore=2" >> ~/.android/advancedFeatures.ini
+          echo "hw.ramSize=2048" >> ~/.android/advancedFeatures.ini
+          echo "hw.gpu.enabled=yes" >> ~/.android/advancedFeatures.ini
+          echo "hw.gpu.mode=auto" >> ~/.android/advancedFeatures.ini
+          echo "showDeviceFrame=no" >> ~/.android/advancedFeatures.ini
+          echo "skin.dynamic=yes" >> ~/.android/advancedFeatures.ini
+      - name: Start Emulator
+        run: |
+          $ANDROID_HOME/emulator/emulator -avd android-30 -no-audio -no-boot-anim -no-window &
+          adb wait-for-device
+          adb shell input keyevent 82
+
+      - name: Run Instrumentation Tests
+        run: ./gradlew connectedAndroidTest
+
+      - name: Stop Emulator
+        run: adb -s emulator-5554 emu kill
