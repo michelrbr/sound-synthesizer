@@ -26,7 +26,7 @@ class HomeScreenTest {
         composeTestRule.onNodeWithText("Sine").assertIsDisplayed()
         composeTestRule.onNodeWithText("Triangle").assertIsDisplayed()
         composeTestRule.onNodeWithText("Square").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Sa").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Saw").assertIsDisplayed()
 
         composeTestRule.onNodeWithText(text = "Frequency:", substring = true).assertIsDisplayed()
         composeTestRule.onNodeWithText(text = "Volume:", substring = true).assertIsDisplayed()
