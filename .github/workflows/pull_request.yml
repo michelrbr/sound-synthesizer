@@ -38,7 +38,7 @@ jobs:
       - name: Set up Emulator
         run: |
           sudo apt-get update
-          sudo apt-get install -yq libvirt-bin qemu-kvm
+          sudo apt-get install -yq libvirt-daemon-system libvirt-clients qemu-kvm
           echo "hw.cpu.ncore=2" >> ~/.android/advancedFeatures.ini
           echo "hw.ramSize=2048" >> ~/.android/advancedFeatures.ini
           echo "hw.gpu.enabled=yes" >> ~/.android/advancedFeatures.ini
