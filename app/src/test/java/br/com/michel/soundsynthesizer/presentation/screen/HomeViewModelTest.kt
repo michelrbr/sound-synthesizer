@@ -24,7 +24,7 @@ class HomeViewModelTest {
         WavetableState(
             Wavetable.SINE,
             testResourcesProvider.getString(R.string.button_label_sine),
-            0xFF148217,
+            0xFF14821,
             false
         ),
         WavetableState(
