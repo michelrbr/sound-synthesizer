@@ -31,8 +31,8 @@ class HomeViewModel @Inject constructor(
 ): ViewModel() {
 
     /*
-    * Using lazy here helps with testing, this approach not synthesizer's property will be called
-    * at creating
+    * Using lazy here helps with testing, this approach no synthesizer's property will be called
+    * at creation
      */
     val wavetableStates: StateFlow<List<WavetableState>> by lazy {
         synthesizer.selectedWavetable
@@ -88,6 +88,11 @@ class HomeViewModel @Inject constructor(
                 started = SharingStarted.WhileSubscribed(UNSUBSCRIBE_DELAY),
                 initialValue = getPlayButtonState(synthesizer.isPlaying.value)
             )
+    }
+
+    override fun onCleared() {
+        synthesizer.close()
+        super.onCleared()
     }
 
     fun setWavetable(wavetable: Wavetable) =

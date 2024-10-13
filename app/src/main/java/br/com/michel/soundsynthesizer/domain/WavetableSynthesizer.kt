@@ -1,8 +1,9 @@
 package br.com.michel.soundsynthesizer.domain
 
 import kotlinx.coroutines.flow.StateFlow
+import java.io.Closeable
 
-interface WavetableSynthesizer {
+interface WavetableSynthesizer : Closeable {
     val selectedWavetable: StateFlow<Wavetable?>
     val wavetables: StateFlow<List<Wavetable>>
     val frequencyInHz: StateFlow<Float>
