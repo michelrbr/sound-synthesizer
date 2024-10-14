@@ -32,38 +32,48 @@ class WavetableSynthesizerImpl @Inject constructor(
     override val isPlaying: StateFlow<Boolean> = _isPlaying
 
     override suspend fun setWavetable(wavetable: Wavetable) {
-        Timber.d("Wavetable set to: $wavetable")
         scope.launch(dispatcherProvider.default) { _selectedWavetable.value = wavetable }
+        Timber.d("Wavetable set to: $wavetable")
     }
 
     override suspend fun play() {
-        Timber.d("Play")
         scope.launch(dispatcherProvider.default) { _isPlaying.value = true }
+        Timber.d("Play")
     }
 
     override suspend fun stop() {
-        Timber.d("Stop")
         scope.launch(dispatcherProvider.default) { _isPlaying.value = false }
+        Timber.d("Stop")
     }
 
-    override suspend fun setFrequency(frequencyInHz: Float) {
+    override suspend fun setFrequency(percentage: Float) {
+        require(percentage in 0F..1F) { "Frequency must be between 0.0 and 1.0" }
+        scope.launch(dispatcherProvider.default) {
+            val frequencyInHz = (FREQUENCY_RANGE.endInclusive - FREQUENCY_RANGE.start) * percentage + FREQUENCY_RANGE.start
+            _frequencyInHz.value = frequencyInHz
+        }
         Timber.d("Frequency set to: $frequencyInHz")
-        scope.launch(dispatcherProvider.default) { _frequencyInHz.value = frequencyInHz }
     }
 
-    override suspend fun setVolume(volumeInDb: Float) {
+    override suspend fun setVolume(percentage: Float) {
+        require(percentage in 0F..1F) { "Volume must be between 0.0 and 1.0" }
+        scope.launch(dispatcherProvider.default) {
+            val volumeInDb = (VOLUME_RANGE.endInclusive - VOLUME_RANGE.start) * percentage + VOLUME_RANGE.start
+            _volumeInDb.value = volumeInDb
+        }
         Timber.d("Volume set to: $volumeInDb")
-        scope.launch(dispatcherProvider.default) { _volumeInDb.value = volumeInDb }
     }
 
     override fun close() {
-        Timber.d("Synthesizer closed")
         scope.cancel()
+        Timber.d("Synthesizer closed")
     }
 
     companion object {
-        internal const val DEFAULT_FREQUENCY = 1000F
-        internal const val DEFAULT_VOLUME = 50F
-        internal const val DEFAULT_IS_PLAYING = false
+        private const val DEFAULT_FREQUENCY = 1000F
+        private val FREQUENCY_RANGE = 40F..3000F
+        private const val DEFAULT_VOLUME = -30F
+        private val VOLUME_RANGE = -60F..0F
+        private const val DEFAULT_IS_PLAYING = false
     }
 }

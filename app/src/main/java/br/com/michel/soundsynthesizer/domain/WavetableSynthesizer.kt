@@ -9,8 +9,8 @@ interface WavetableSynthesizer : Closeable {
     val frequencyInHz: StateFlow<Float>
     val volumeInDb: StateFlow<Float>
     val isPlaying: StateFlow<Boolean>
-    suspend fun setFrequency(frequencyInHz: Float)
-    suspend fun setVolume(volumeInDb: Float)
+    suspend fun setFrequency(percentage: Float)
+    suspend fun setVolume(percentage: Float)
     suspend fun setWavetable(wavetable: Wavetable)
     suspend fun play()
     suspend fun stop()
