@@ -48,16 +48,14 @@ fun HomeScreen(
             SynthesizerSlider(
                 modifier = Modifier.weight(1F),
                 label = frequencyState.label,
-                range = 40F..3000F,
-                initialValue = frequencyState.defaultValue,
+                initialValue = HomeViewModel.DEFAULT_FREQUENCY,
                 onValueChange = viewModel::setFrequency
             )
 
             SynthesizerSlider(
                 modifier = Modifier.weight(1F),
                 label = volumeState.label,
-                range = 1F..100F,
-                initialValue = volumeState.defaultValue,
+                initialValue = HomeViewModel.DEFAULT_VOLUME,
                 onValueChange = viewModel::setVolume
             )
         }

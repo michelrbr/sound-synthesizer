@@ -6,4 +6,5 @@ import kotlinx.coroutines.Dispatchers
 val testDispatcherProvider = object : CoroutineDispatcherProvider() {
     override val io: CoroutineDispatcher = Dispatchers.Unconfined
     override val main: CoroutineDispatcher = Dispatchers.Unconfined
+    override val default: CoroutineDispatcher = Dispatchers.Unconfined
 }

@@ -17,7 +17,6 @@ import br.com.michel.soundsynthesizer.presentation.theme.spacing
 fun SynthesizerSlider(
     modifier: Modifier = Modifier,
     label: String? = null,
-    range: ClosedFloatingPointRange<Float> = 0f..1f,
     initialValue: Float = 0f,
     onValueChange: (Float) -> Unit
 ) {
@@ -34,7 +33,6 @@ fun SynthesizerSlider(
 
         Slider(
             value = value,
-            valueRange = range,
             onValueChange = {
                 value = it
                 onValueChange(it)

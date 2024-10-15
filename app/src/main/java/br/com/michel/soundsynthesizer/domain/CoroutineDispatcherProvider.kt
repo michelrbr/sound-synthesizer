@@ -9,4 +9,5 @@ import javax.inject.Singleton
 open class CoroutineDispatcherProvider @Inject constructor() {
     open val main: CoroutineDispatcher = Dispatchers.Main
     open val io: CoroutineDispatcher = Dispatchers.IO
+    open val default: CoroutineDispatcher = Dispatchers.Default
 }
