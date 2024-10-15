@@ -124,8 +124,7 @@ class HomeViewModelTest {
             label = testResourcesProvider.getString(
                 R.string.slider_label_frequency,
                 mockedFrequency.value
-            ),
-            defaultValue = HomeViewModel.DEFAULT_FREQUENCY
+            )
         )
 
         every { synthesizer.frequencyInHz } returns mockedFrequency
@@ -143,8 +142,7 @@ class HomeViewModelTest {
             label = testResourcesProvider.getString(
                 R.string.slider_label_frequency,
                 2000F
-            ),
-            defaultValue = HomeViewModel.DEFAULT_FREQUENCY
+            )
         )
 
         every { synthesizer.frequencyInHz } returns mockedFrequency
@@ -176,8 +174,7 @@ class HomeViewModelTest {
             label = testResourcesProvider.getString(
                 R.string.slider_label_volume,
                 mockedVolume.value
-            ),
-            defaultValue = HomeViewModel.DEFAULT_VOLUME
+            )
         )
 
         every { synthesizer.volumeInDb } returns mockedVolume
@@ -195,8 +192,7 @@ class HomeViewModelTest {
             label = testResourcesProvider.getString(
                 R.string.slider_label_volume,
                 80F
-            ),
-            defaultValue = HomeViewModel.DEFAULT_VOLUME
+            )
         )
 
         every { synthesizer.volumeInDb } returns mockedVolume

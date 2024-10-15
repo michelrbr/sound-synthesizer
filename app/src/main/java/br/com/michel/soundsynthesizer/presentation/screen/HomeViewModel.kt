@@ -48,16 +48,14 @@ class HomeViewModel @Inject constructor(
         synthesizer.frequencyInHz
             .map {
                 SliderState(
-                    label = resources.getString(R.string.slider_label_frequency, it),
-                    defaultValue = DEFAULT_FREQUENCY
+                    label = resources.getString(R.string.slider_label_frequency, it)
                 )
             }
             .stateIn(
                 scope = viewModelScope.plus(dispatcherProvider.default),
                 started = SharingStarted.WhileSubscribed(UNSUBSCRIBE_DELAY),
                 initialValue = SliderState(
-                    label = resources.getString(R.string.slider_label_frequency, synthesizer.frequencyInHz.value),
-                    defaultValue = DEFAULT_FREQUENCY
+                    label = resources.getString(R.string.slider_label_frequency, synthesizer.frequencyInHz.value)
                 )
             )
     }
@@ -66,24 +64,21 @@ class HomeViewModel @Inject constructor(
         synthesizer.volumeInDb
             .map {
                 SliderState(
-                    label = resources.getString(R.string.slider_label_volume, it),
-                    defaultValue = DEFAULT_VOLUME
+                    label = resources.getString(R.string.slider_label_volume, it)
                 )
             }.stateIn(
                 scope = viewModelScope.plus(dispatcherProvider.default),
                 started = SharingStarted.WhileSubscribed(UNSUBSCRIBE_DELAY),
                 initialValue = SliderState(
                     label = resources.getString(R.string.slider_label_volume, DEFAULT_VOLUME),
-                    defaultValue = DEFAULT_VOLUME
                 )
             )
     }
 
     val playState: StateFlow<PlayButtonState> by lazy {
         synthesizer.isPlaying
-            .map {
-                getPlayButtonState(it)
-            }.stateIn(
+            .map { getPlayButtonState(it) }
+            .stateIn(
                 scope = viewModelScope.plus(dispatcherProvider.default),
                 started = SharingStarted.WhileSubscribed(UNSUBSCRIBE_DELAY),
                 initialValue = getPlayButtonState(synthesizer.isPlaying.value)
@@ -156,8 +151,8 @@ class HomeViewModel @Inject constructor(
         }
 
     companion object {
-        internal const val DEFAULT_FREQUENCY = 1000F
-        internal const val DEFAULT_VOLUME = 50F
+        internal const val DEFAULT_FREQUENCY = 0.324325F
+        internal const val DEFAULT_VOLUME = 0.5F
         private const val UNSUBSCRIBE_DELAY: Long = 5_000
     }
 }
