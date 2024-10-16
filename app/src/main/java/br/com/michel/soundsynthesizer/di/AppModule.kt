@@ -2,6 +2,8 @@ package br.com.michel.soundsynthesizer.di
 
 import br.com.michel.soundsynthesizer.domain.ResourceProviderImpl
 import br.com.michel.soundsynthesizer.domain.ResourcesProvider
+import br.com.michel.soundsynthesizer.domain.SynthesizerBridge
+import br.com.michel.soundsynthesizer.domain.SynthesizerBridgeImpl
 import br.com.michel.soundsynthesizer.domain.WavetableSynthesizer
 import br.com.michel.soundsynthesizer.domain.WavetableSynthesizerImpl
 import dagger.Binds
@@ -25,6 +27,11 @@ interface AppModule {
     fun bindsWavetableSynthesizer(
         synthesizerImpl: WavetableSynthesizerImpl
     ): WavetableSynthesizer
+
+    @Binds
+    fun bindSynthesizerBridge(
+        bridge: SynthesizerBridgeImpl
+    ): SynthesizerBridge
 
     companion object {
         @Provides

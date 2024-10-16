@@ -6,14 +6,14 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class WavetableSynthesizerImpl @Inject constructor(
     @SynthesizerScope private val scope: CoroutineScope,
-    private val dispatcherProvider: CoroutineDispatcherProvider
+    private val dispatcherProvider: CoroutineDispatcherProvider,
+    private val bridge: SynthesizerBridge
 ) : WavetableSynthesizer {
 
     private val _selectedWavetable = MutableStateFlow<Wavetable?>(null)
@@ -32,41 +32,47 @@ class WavetableSynthesizerImpl @Inject constructor(
     override val isPlaying: StateFlow<Boolean> = _isPlaying
 
     override suspend fun setWavetable(wavetable: Wavetable) {
-        scope.launch(dispatcherProvider.default) { _selectedWavetable.value = wavetable }
-        Timber.d("Wavetable set to: $wavetable")
+        scope.launch(dispatcherProvider.default) {
+            bridge.setWavetable(wavetable)
+            _selectedWavetable.value = wavetable
+        }
     }
 
     override suspend fun play() {
-        scope.launch(dispatcherProvider.default) { _isPlaying.value = true }
-        Timber.d("Play")
+        scope.launch(dispatcherProvider.default) {
+            bridge.play()
+            _isPlaying.value = bridge.isPlaying()
+        }
     }
 
     override suspend fun stop() {
-        scope.launch(dispatcherProvider.default) { _isPlaying.value = false }
-        Timber.d("Stop")
+        scope.launch(dispatcherProvider.default) {
+            bridge.stop()
+            _isPlaying.value = bridge.isPlaying()
+        }
     }
 
     override suspend fun setFrequency(percentage: Float) {
         require(percentage in 0F..1F) { "Frequency must be between 0.0 and 1.0" }
         scope.launch(dispatcherProvider.default) {
             val frequencyInHz = (FREQUENCY_RANGE.endInclusive - FREQUENCY_RANGE.start) * percentage + FREQUENCY_RANGE.start
+            bridge.setFrequency(frequencyInHz)
             _frequencyInHz.value = frequencyInHz
         }
-        Timber.d("Frequency set to: $frequencyInHz")
     }
 
     override suspend fun setVolume(percentage: Float) {
         require(percentage in 0F..1F) { "Volume must be between 0.0 and 1.0" }
         scope.launch(dispatcherProvider.default) {
             val volumeInDb = (VOLUME_RANGE.endInclusive - VOLUME_RANGE.start) * percentage + VOLUME_RANGE.start
+            bridge.setVolume(volumeInDb)
             _volumeInDb.value = volumeInDb
         }
-        Timber.d("Volume set to: $volumeInDb")
     }
 
     override fun close() {
         scope.cancel()
-        Timber.d("Synthesizer closed")
+        bridge.close()
     }
 
     companion object {

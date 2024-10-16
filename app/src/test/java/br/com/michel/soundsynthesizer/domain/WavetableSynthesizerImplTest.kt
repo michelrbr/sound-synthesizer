@@ -1,7 +1,11 @@
 package br.com.michel.soundsynthesizer.domain
 
 import io.mockk.clearMocks
+import io.mockk.coEvery
+import io.mockk.coJustRun
+import io.mockk.coVerify
 import io.mockk.justRun
+import io.mockk.mockk
 import io.mockk.spyk
 import io.mockk.verify
 import kotlinx.coroutines.cancel
@@ -16,19 +20,24 @@ import kotlin.test.assertFailsWith
 class WavetableSynthesizerImplTest {
 
     private val testScope = spyk(TestScope())
+    private val bridge = mockk<SynthesizerBridge>()
     private lateinit var synthesizerImpl: WavetableSynthesizerImpl
 
     @BeforeTest
     fun setup() {
         synthesizerImpl = WavetableSynthesizerImpl(
             testScope,
-            testDispatcherProvider
+            testDispatcherProvider,
+            bridge
         )
     }
 
     @AfterTest
     fun shutdown() {
-        clearMocks(testScope)
+        clearMocks(
+            testScope,
+            bridge
+        )
     }
 
     @Test
@@ -40,8 +49,24 @@ class WavetableSynthesizerImplTest {
     }
 
     @Test
+    fun `Given setWavetable is triggered Then call bridge's setWavetable`() = runTest {
+        val expected = Wavetable.SQUARE
+
+        coJustRun { bridge.setWavetable(any()) }
+
+        synthesizerImpl.setWavetable(expected)
+
+        coVerify {
+            bridge.setWavetable(expected)
+        }
+    }
+
+    @Test
     fun `Given setWavetable is triggered Then update selectedWavetable`() = runTest {
         val expected = Wavetable.SQUARE
+
+        coJustRun { bridge.setWavetable(any()) }
+
         synthesizerImpl.setWavetable(expected)
 
         assertEquals(
@@ -51,8 +76,22 @@ class WavetableSynthesizerImplTest {
     }
 
     @Test
+    fun `Given setFrequency is triggered Then call bridge's setFrequency`() = runTest {
+        coJustRun { bridge.setFrequency(any()) }
+
+        synthesizerImpl.setFrequency(1F)
+
+        coVerify {
+            bridge.setFrequency(any())
+        }
+    }
+
+    @Test
     fun `Given setFrequency is triggered When value is 0,0 Then update frequencyInHz to 40`() = runTest {
         val expected = 40F
+
+        coJustRun { bridge.setFrequency(any()) }
+
         synthesizerImpl.setFrequency(0F)
 
         assertEquals(
@@ -64,6 +103,9 @@ class WavetableSynthesizerImplTest {
     @Test
     fun `Given setFrequency is triggered When value is 0,5 Then update frequencyInHz to 1520`() = runTest {
         val expected = 1520F
+
+        coJustRun { bridge.setFrequency(any()) }
+
         synthesizerImpl.setFrequency(0.5F)
 
         assertEquals(
@@ -75,6 +117,9 @@ class WavetableSynthesizerImplTest {
     @Test
     fun `Given setFrequency is triggered When value is 1,0 Then update frequencyInHz to 3000`() = runTest {
         val expected = 3000F
+
+        coJustRun { bridge.setFrequency(any()) }
+
         synthesizerImpl.setFrequency(1F)
 
         assertEquals(
@@ -100,8 +145,22 @@ class WavetableSynthesizerImplTest {
     }
 
     @Test
+    fun `Given setVolume is triggered Then call bridge's setVolume`() = runTest {
+        coJustRun { bridge.setVolume(any()) }
+
+        synthesizerImpl.setVolume(0F)
+
+        coVerify {
+            bridge.setVolume(any())
+        }
+    }
+
+    @Test
     fun `Given setVolume is triggered When value is 0,0 Then update volumeInDb to -60`() = runTest {
         val expected = -60F
+
+        coJustRun { bridge.setVolume(any()) }
+
         synthesizerImpl.setVolume(0F)
 
         assertEquals(
@@ -124,6 +183,9 @@ class WavetableSynthesizerImplTest {
     @Test
     fun `Given setVolume is triggered When value is 1,0 Then update volumeInDb to 0`() = runTest {
         val expected = 0F
+
+        coJustRun { bridge.setVolume(any()) }
+
         synthesizerImpl.setVolume(1F)
 
         assertEquals(
@@ -149,8 +211,25 @@ class WavetableSynthesizerImplTest {
     }
 
     @Test
+    fun `Given play is triggered Then call bridge's play and isPlaying`() = runTest {
+        coJustRun { bridge.play() }
+        coEvery { bridge.isPlaying() } returns true
+
+        synthesizerImpl.play()
+
+        coVerify {
+            bridge.play()
+            bridge.isPlaying()
+        }
+    }
+
+    @Test
     fun `Given play is triggered Then set isPlaying to true`() = runTest {
         val expected = true
+
+        coJustRun { bridge.play() }
+        coEvery { bridge.isPlaying() } returns expected
+
         synthesizerImpl.play()
 
         assertEquals(
@@ -160,8 +239,25 @@ class WavetableSynthesizerImplTest {
     }
 
     @Test
+    fun `Given stop is triggered Then call bridge's stop and isPlaying`() = runTest {
+        coJustRun { bridge.stop() }
+        coEvery { bridge.isPlaying() } returns false
+
+        synthesizerImpl.stop()
+
+        coVerify {
+            bridge.stop()
+            bridge.isPlaying()
+        }
+    }
+
+    @Test
     fun `Given stop is triggered Then set isPlaying to false`() = runTest {
         val expected = false
+
+        coJustRun { bridge.stop() }
+        coEvery { bridge.isPlaying() } returns expected
+
         synthesizerImpl.stop()
 
         assertEquals(
@@ -171,12 +267,15 @@ class WavetableSynthesizerImplTest {
     }
 
     @Test
-    fun `Given close is triggered Then call scope cancel method`() = runTest {
+    fun `Given close is triggered Then cancel scope and close native bridge`() = runTest {
         justRun { testScope.cancel() }
+        justRun { bridge.close() }
+
         synthesizerImpl.close()
 
         verify {
             testScope.cancel()
+            bridge.close()
         }
     }
 }
