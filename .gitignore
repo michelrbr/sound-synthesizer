@@ -13,6 +13,7 @@ local.properties
 .idea/modules.xml
 .idea/workspace.xml
 .idea/misc.xml
+*/.cxx
 
 # User-specific configurations
 *.jks
