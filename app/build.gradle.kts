@@ -24,6 +24,7 @@ android {
         externalNativeBuild {
             cmake {
                 cppFlags += ""
+                arguments("-DANDROID_STL=c++_shared")
             }
         }
     }
@@ -48,6 +49,7 @@ android {
         compose = true
         // From AGP 8 on, it's required to enable buildConfig to have access to BuildConfig.DEBUG
         buildConfig = true
+        prefab = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.1"
@@ -83,6 +85,9 @@ dependencies {
     implementation(libs.hilt.android)
     implementation(libs.androidx.hilt.compose)
     kapt(libs.hilt.compiler)
+
+    // C++ lib
+    implementation(libs.google.oboe)
 
     // Logging
     implementation(libs.timber)
