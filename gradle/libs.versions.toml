@@ -1,19 +1,19 @@
 [versions]
 agp = "8.8.2"
 kotlinVersion = "2.0.0"
-coreKtx = "1.13.1"
+coreKtx = "1.15.0"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
-lifecycleRuntimeKtx = "2.8.6"
-activityCompose = "1.9.3"
-composeBom = "2024.10.00"
+lifecycleRuntimeKtx = "2.8.7"
+activityCompose = "1.10.1"
+composeBom = "2025.03.00"
 timberVersion = "5.0.1"
 mockkVersion = "1.13.12"
 coroutineVersion = "1.9.0"
 hiltVersion = "2.52"
 kaptVersion = "2.0.20"
 hiltComposeVersion = "1.2.0"
-oboeVersion = "1.9.0"
+oboeVersion = "1.9.3"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
