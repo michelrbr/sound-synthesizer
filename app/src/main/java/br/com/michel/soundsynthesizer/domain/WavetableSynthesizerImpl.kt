@@ -16,7 +16,7 @@ class WavetableSynthesizerImpl @Inject constructor(
     private val bridge: SynthesizerBridge
 ) : WavetableSynthesizer {
 
-    private val _selectedWavetable = MutableStateFlow<Wavetable?>(null)
+    private val _selectedWavetable = MutableStateFlow(Wavetable.SINE)
     override val selectedWavetable: StateFlow<Wavetable?> = _selectedWavetable
 
     private val _wavetables = MutableStateFlow(Wavetable.entries)
@@ -30,6 +30,13 @@ class WavetableSynthesizerImpl @Inject constructor(
 
     private val _isPlaying = MutableStateFlow(DEFAULT_IS_PLAYING)
     override val isPlaying: StateFlow<Boolean> = _isPlaying
+
+    init {
+        scope.launch(dispatcherProvider.default) {
+            bridge.setVolume(_volumeInDb.value)
+            bridge.setFrequency(_frequencyInHz.value)
+        }
+    }
 
     override suspend fun setWavetable(wavetable: Wavetable) {
         scope.launch(dispatcherProvider.default) {

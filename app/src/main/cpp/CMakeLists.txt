@@ -4,7 +4,7 @@
 # For more examples on how to use CMake, see https://github.com/android/ndk-samples.
 
 # Sets the minimum CMake version required for this project.
-cmake_minimum_required(VERSION 3.4.1)
+cmake_minimum_required(VERSION 3.22.1)
 
 # Declares the project name. The project name can be accessed via ${ PROJECT_NAME},
 # Since this is the top level CMakeLists.txt, the project name is also accessible
@@ -30,7 +30,11 @@ add_library(
         SHARED
     # List C/C++ source files with relative paths to this CMakeLists.txt.
         WavetableSynthesizer.cpp
-        sound-synthesizer-native-lib.cpp)
+        WavetableFactory.cpp
+        WavetableOscillator.cpp
+        OboeAudioPlayer.cpp
+        sound-synthesizer-native-lib.cpp
+)
 
 include_directories(include)
 

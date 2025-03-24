@@ -1,7 +1,6 @@
 #include <jni.h>
 #include <memory>
 #include "Log.h"
-#include "Wavetable.h"
 #include "WavetableSynthesizer.h"
 
 extern "C" {
