@@ -25,6 +25,9 @@ class WavetableSynthesizerImplTest {
 
     @BeforeTest
     fun setup() {
+        coJustRun { bridge.setWavetable(any()) }
+        coJustRun { bridge.setVolume(any()) }
+        coJustRun { bridge.setFrequency(any()) }
         synthesizerImpl = WavetableSynthesizerImpl(
             testScope,
             testDispatcherProvider,
@@ -34,10 +37,7 @@ class WavetableSynthesizerImplTest {
 
     @AfterTest
     fun shutdown() {
-        clearMocks(
-            testScope,
-            bridge
-        )
+        clearMocks(bridge)
     }
 
     @Test
@@ -52,8 +52,6 @@ class WavetableSynthesizerImplTest {
     fun `Given setWavetable is triggered Then call bridge's setWavetable`() = runTest {
         val expected = Wavetable.SQUARE
 
-        coJustRun { bridge.setWavetable(any()) }
-
         synthesizerImpl.setWavetable(expected)
 
         coVerify {
@@ -65,8 +63,6 @@ class WavetableSynthesizerImplTest {
     fun `Given setWavetable is triggered Then update selectedWavetable`() = runTest {
         val expected = Wavetable.SQUARE
 
-        coJustRun { bridge.setWavetable(any()) }
-
         synthesizerImpl.setWavetable(expected)
 
         assertEquals(
@@ -77,8 +73,6 @@ class WavetableSynthesizerImplTest {
 
     @Test
     fun `Given setFrequency is triggered Then call bridge's setFrequency`() = runTest {
-        coJustRun { bridge.setFrequency(any()) }
-
         synthesizerImpl.setFrequency(1F)
 
         coVerify {
@@ -89,8 +83,6 @@ class WavetableSynthesizerImplTest {
     @Test
     fun `Given setFrequency is triggered When value is 0,0 Then update frequencyInHz to 40`() = runTest {
         val expected = 40F
-
-        coJustRun { bridge.setFrequency(any()) }
 
         synthesizerImpl.setFrequency(0F)
 
@@ -104,8 +96,6 @@ class WavetableSynthesizerImplTest {
     fun `Given setFrequency is triggered When value is 0,5 Then update frequencyInHz to 1520`() = runTest {
         val expected = 1520F
 
-        coJustRun { bridge.setFrequency(any()) }
-
         synthesizerImpl.setFrequency(0.5F)
 
         assertEquals(
@@ -117,8 +107,6 @@ class WavetableSynthesizerImplTest {
     @Test
     fun `Given setFrequency is triggered When value is 1,0 Then update frequencyInHz to 3000`() = runTest {
         val expected = 3000F
-
-        coJustRun { bridge.setFrequency(any()) }
 
         synthesizerImpl.setFrequency(1F)
 
@@ -146,8 +134,6 @@ class WavetableSynthesizerImplTest {
 
     @Test
     fun `Given setVolume is triggered Then call bridge's setVolume`() = runTest {
-        coJustRun { bridge.setVolume(any()) }
-
         synthesizerImpl.setVolume(0F)
 
         coVerify {
@@ -158,8 +144,6 @@ class WavetableSynthesizerImplTest {
     @Test
     fun `Given setVolume is triggered When value is 0,0 Then update volumeInDb to -60`() = runTest {
         val expected = -60F
-
-        coJustRun { bridge.setVolume(any()) }
 
         synthesizerImpl.setVolume(0F)
 
@@ -183,8 +167,6 @@ class WavetableSynthesizerImplTest {
     @Test
     fun `Given setVolume is triggered When value is 1,0 Then update volumeInDb to 0`() = runTest {
         val expected = 0F
-
-        coJustRun { bridge.setVolume(any()) }
 
         synthesizerImpl.setVolume(1F)
 
