@@ -49,6 +49,34 @@ class WavetableSynthesizerImplTest {
     }
 
     @Test
+    fun `Given setWavetable is triggered When wavetable is null Then do not call bridge's setWavetable`() = runTest {
+        synthesizerImpl.setWavetable(null)
+
+        coVerify(exactly = 0) {
+            bridge.setWavetable(any())
+        }
+    }
+
+    @Test
+    fun `Given setWavetable is triggered When wavetable is null Then set selectedWavetable to null`() = runTest {
+        synthesizerImpl.setWavetable(null)
+
+        assertEquals(
+            null,
+            synthesizerImpl.selectedWavetable.value
+        )
+    }
+
+    @Test
+    fun `Given setWavetable is triggered When wavetable is null Then call bridge's stop`() = runTest {
+        synthesizerImpl.setWavetable(null)
+
+        coVerify {
+            bridge.stop()
+        }
+    }
+
+    @Test
     fun `Given setWavetable is triggered Then call bridge's setWavetable`() = runTest {
         val expected = Wavetable.SQUARE
 
@@ -56,6 +84,32 @@ class WavetableSynthesizerImplTest {
 
         coVerify {
             bridge.setWavetable(expected)
+        }
+    }
+
+    @Test
+    fun `Given setWavetable is triggered When not playing Then call bridge's play`() = runTest {
+        coEvery { bridge.isPlaying() } returns false
+
+        val expected = Wavetable.SQUARE
+
+        synthesizerImpl.setWavetable(expected)
+
+        coVerify {
+            bridge.play()
+        }
+    }
+
+    @Test
+    fun `Given setWavetable is triggered When is playing Then do not call bridge's play`() = runTest {
+        coEvery { bridge.isPlaying() } returns true
+
+        val expected = Wavetable.SQUARE
+
+        synthesizerImpl.setWavetable(expected)
+
+        coVerify(exactly = 0) {
+            bridge.play()
         }
     }
 
@@ -190,62 +244,6 @@ class WavetableSynthesizerImplTest {
         assertFailsWith(IllegalArgumentException::class) {
             runTest { synthesizerImpl.setVolume(expected) }
         }
-    }
-
-    @Test
-    fun `Given play is triggered Then call bridge's play and isPlaying`() = runTest {
-        coJustRun { bridge.play() }
-        coEvery { bridge.isPlaying() } returns true
-
-        synthesizerImpl.play()
-
-        coVerify {
-            bridge.play()
-            bridge.isPlaying()
-        }
-    }
-
-    @Test
-    fun `Given play is triggered Then set isPlaying to true`() = runTest {
-        val expected = true
-
-        coJustRun { bridge.play() }
-        coEvery { bridge.isPlaying() } returns expected
-
-        synthesizerImpl.play()
-
-        assertEquals(
-            expected,
-            synthesizerImpl.isPlaying.value
-        )
-    }
-
-    @Test
-    fun `Given stop is triggered Then call bridge's stop and isPlaying`() = runTest {
-        coJustRun { bridge.stop() }
-        coEvery { bridge.isPlaying() } returns false
-
-        synthesizerImpl.stop()
-
-        coVerify {
-            bridge.stop()
-            bridge.isPlaying()
-        }
-    }
-
-    @Test
-    fun `Given stop is triggered Then set isPlaying to false`() = runTest {
-        val expected = false
-
-        coJustRun { bridge.stop() }
-        coEvery { bridge.isPlaying() } returns expected
-
-        synthesizerImpl.stop()
-
-        assertEquals(
-            expected,
-            synthesizerImpl.isPlaying.value
-        )
     }
 
     @Test

@@ -36,7 +36,8 @@ fun WavetableSelection(
         items(wavetables) { prop ->
             Button(
                 onClick = { onSoundSelected(prop.wavetable) },
-                colors = ButtonDefaults.buttonColors(Color(prop.color)),
+                colors = ButtonDefaults
+                    .buttonColors(Color(prop.color), Color.White),
                 shape = RoundedCornerShape(AppTheme.spacing.small),
                 modifier = Modifier
                     .size(100.dp)

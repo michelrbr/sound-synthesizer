@@ -1,13 +1,9 @@
 package br.com.michel.soundsynthesizer.presentation.screen
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.PlayArrow
-import androidx.compose.material.icons.filled.Stop
 import br.com.michel.soundsynthesizer.domain.Wavetable
 import br.com.michel.soundsynthesizer.domain.WavetableSynthesizer
 import br.com.michel.soundsynthesizer.domain.testDispatcherProvider
 import br.com.michel.soundsynthesizer.domain.testResourcesProvider
-import br.com.michel.soundsynthesizer.presentation.screen.model.PlayButtonState
 import br.com.michel.soundsynthesizer.presentation.screen.model.SliderState
 import br.com.michel.soundsynthesizer.presentation.screen.model.WavetableState
 import com.michel.soundsynthesizer.R
@@ -107,13 +103,30 @@ class HomeViewModelTest {
     }
 
     @Test
-    fun `Given setWavetable is triggered Then call synthesizer setWavetable method`() = runTest {
+    fun `Given setWavetable is triggered When Wavetable is different from current selection Then call synthesizer setWavetable with with the provided Wavetable`() = runTest {
+        val mockedSelection = MutableStateFlow<Wavetable?>(null)
+
         coJustRun { synthesizer.setWavetable(any()) }
+        every { synthesizer.selectedWavetable } returns mockedSelection
 
         viewModel.setWavetable(Wavetable.SINE)
 
         coVerify {
             synthesizer.setWavetable(Wavetable.SINE)
+        }
+    }
+
+    @Test
+    fun `Given setWavetable is triggered When Wavetable is equals to the current selection Then call synthesizer setWavetable with null`() = runTest {
+        val mockedSelection = MutableStateFlow<Wavetable?>(Wavetable.SINE)
+
+        coJustRun { synthesizer.setWavetable(any()) }
+        every { synthesizer.selectedWavetable } returns mockedSelection
+
+        viewModel.setWavetable(Wavetable.SINE)
+
+        coVerify {
+            synthesizer.setWavetable(null)
         }
     }
 
@@ -213,65 +226,6 @@ class HomeViewModelTest {
 
         coVerify {
             synthesizer.setVolume(80F)
-        }
-    }
-
-    @Test
-    fun `Given playState starts to be collected Then emits default playState`() = runTest {
-        val mockedIsPlaying = MutableStateFlow(false)
-        val expected = PlayButtonState(
-            icon = Icons.Filled.PlayArrow,
-            contentDescription = R.string.play_content_description.toString()
-        )
-
-        every { synthesizer.isPlaying } returns mockedIsPlaying
-
-        assertEquals(
-            expected,
-            viewModel.playState.first()
-        )
-    }
-
-    @Test
-    fun `Given isPlaying updates Then update playState`() = runTest {
-        val mockedIsPlaying = MutableStateFlow(false)
-        val expected = PlayButtonState(
-            icon = Icons.Filled.Stop,
-            contentDescription = R.string.stop_content_description.toString()
-        )
-
-        every { synthesizer.isPlaying } returns mockedIsPlaying
-        coJustRun { synthesizer.play() }
-
-        mockedIsPlaying.emit(true)
-
-        assertEquals(
-            expected,
-            viewModel.playState.first()
-        )
-    }
-
-    @Test
-    fun `Given togglePayStop is triggered When sound is stopped Then trigger synthesizer's play`() = runTest{
-        every { synthesizer.isPlaying.value } returns false
-        coJustRun { synthesizer.play() }
-
-        viewModel.togglePayStop()
-
-        coVerify {
-            synthesizer.play()
-        }
-    }
-
-    @Test
-    fun `Given togglePayStop is triggered When sound is playing Then trigger synthesizer's stop`() = runTest{
-        every { synthesizer.isPlaying.value } returns true
-        coJustRun { synthesizer.stop() }
-
-        viewModel.togglePayStop()
-
-        coVerify {
-            synthesizer.stop()
         }
     }
 }

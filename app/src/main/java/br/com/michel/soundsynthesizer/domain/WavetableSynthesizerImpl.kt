@@ -16,7 +16,7 @@ class WavetableSynthesizerImpl @Inject constructor(
     private val bridge: SynthesizerBridge
 ) : WavetableSynthesizer {
 
-    private val _selectedWavetable = MutableStateFlow(Wavetable.SINE)
+    private val _selectedWavetable = MutableStateFlow<Wavetable?>(null)
     override val selectedWavetable: StateFlow<Wavetable?> = _selectedWavetable
 
     private val _wavetables = MutableStateFlow(Wavetable.entries)
@@ -28,9 +28,6 @@ class WavetableSynthesizerImpl @Inject constructor(
     private val _volumeInDb = MutableStateFlow(DEFAULT_VOLUME)
     override val volumeInDb: StateFlow<Float> = _volumeInDb
 
-    private val _isPlaying = MutableStateFlow(DEFAULT_IS_PLAYING)
-    override val isPlaying: StateFlow<Boolean> = _isPlaying
-
     init {
         scope.launch(dispatcherProvider.default) {
             bridge.setVolume(_volumeInDb.value)
@@ -38,24 +35,17 @@ class WavetableSynthesizerImpl @Inject constructor(
         }
     }
 
-    override suspend fun setWavetable(wavetable: Wavetable) {
+    override suspend fun setWavetable(wavetable: Wavetable?) {
         scope.launch(dispatcherProvider.default) {
-            bridge.setWavetable(wavetable)
             _selectedWavetable.value = wavetable
-        }
-    }
-
-    override suspend fun play() {
-        scope.launch(dispatcherProvider.default) {
-            bridge.play()
-            _isPlaying.value = bridge.isPlaying()
-        }
-    }
-
-    override suspend fun stop() {
-        scope.launch(dispatcherProvider.default) {
-            bridge.stop()
-            _isPlaying.value = bridge.isPlaying()
+            if (wavetable == null) {
+                bridge.stop()
+            } else {
+                bridge.setWavetable(wavetable)
+                if (bridge.isPlaying().not()) {
+                    bridge.play()
+                }
+            }
         }
     }
 
@@ -87,6 +77,5 @@ class WavetableSynthesizerImpl @Inject constructor(
         private val FREQUENCY_RANGE = 40F..3000F
         private const val DEFAULT_VOLUME = -30F
         private val VOLUME_RANGE = -60F..0F
-        private const val DEFAULT_IS_PLAYING = false
     }
 }
