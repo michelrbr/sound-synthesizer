@@ -2,6 +2,7 @@ package br.com.michel.soundsynthesizer.presentation.screen
 
 import br.com.michel.soundsynthesizer.domain.Wavetable
 import br.com.michel.soundsynthesizer.domain.WavetableSynthesizer
+import br.com.michel.soundsynthesizer.domain.getColor
 import br.com.michel.soundsynthesizer.domain.testDispatcherProvider
 import br.com.michel.soundsynthesizer.domain.testResourcesProvider
 import br.com.michel.soundsynthesizer.presentation.screen.model.SliderState
@@ -30,25 +31,25 @@ class HomeViewModelTest {
         WavetableState(
             Wavetable.SINE,
             testResourcesProvider.getString(R.string.button_label_sine),
-            0xFF148217,
+            Wavetable.SINE.getColor(),
             false
         ),
         WavetableState(
             Wavetable.TRIANGLE,
             testResourcesProvider.getString(R.string.button_label_triangle),
-            0xFFD6D020,
+            Wavetable.TRIANGLE.getColor(),
             false
         ),
         WavetableState(
             Wavetable.SQUARE,
             testResourcesProvider.getString(R.string.button_label_square),
-            0xFFB31E19,
+            Wavetable.SQUARE.getColor(),
             false
         ),
         WavetableState(
             Wavetable.SAW,
             testResourcesProvider.getString(R.string.button_label_saw),
-            0xFFC96908,
+            Wavetable.SAW.getColor(),
             false
         ),
     )
@@ -86,7 +87,7 @@ class HomeViewModelTest {
     fun `Given a Wavetable selection Then update Wavetable list with the selection`() = runTest {
         val mockedWavetables = MutableStateFlow(Wavetable.entries)
         val mockedSelection = MutableStateFlow<Wavetable?>(null)
-        val expected = defaultWavetables.mapIndexed { index, wavetableState ->
+        val expected = defaultWavetables.mapIndexed { _, wavetableState ->
             wavetableState.copy(isSelected = wavetableState.wavetable == Wavetable.SINE)
         }
 

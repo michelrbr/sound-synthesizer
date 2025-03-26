@@ -6,6 +6,7 @@ import br.com.michel.soundsynthesizer.domain.CoroutineDispatcherProvider
 import br.com.michel.soundsynthesizer.domain.ResourcesProvider
 import br.com.michel.soundsynthesizer.domain.Wavetable
 import br.com.michel.soundsynthesizer.domain.WavetableSynthesizer
+import br.com.michel.soundsynthesizer.domain.getColor
 import br.com.michel.soundsynthesizer.presentation.screen.model.SliderState
 import br.com.michel.soundsynthesizer.presentation.screen.model.WavetableState
 import com.michel.soundsynthesizer.R
@@ -107,14 +108,6 @@ class HomeViewModel @Inject constructor(
             Wavetable.TRIANGLE -> resources.getString(R.string.button_label_triangle)
             Wavetable.SQUARE -> resources.getString(R.string.button_label_square)
             Wavetable.SAW -> resources.getString(R.string.button_label_saw)
-        }
-
-    private fun Wavetable.getColor(): Long =
-        when (this) {
-            Wavetable.SINE -> 0xFF148217
-            Wavetable.TRIANGLE -> 0xFFD6D020
-            Wavetable.SQUARE -> 0xFFB31E19
-            Wavetable.SAW -> 0xFFC96908
         }
 
     companion object {
