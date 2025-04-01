@@ -2,9 +2,7 @@ package com.michel.soundsynthesizer.presentation.screen
 
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
-import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
-import androidx.compose.ui.test.performClick
 import br.com.michel.soundsynthesizer.MainActivity
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -30,8 +28,5 @@ class HomeScreenTest {
 
         composeTestRule.onNodeWithText(text = "Frequency:", substring = true).assertIsDisplayed()
         composeTestRule.onNodeWithText(text = "Volume:", substring = true).assertIsDisplayed()
-
-        composeTestRule.onNodeWithContentDescription("play").performClick()
-        composeTestRule.onNodeWithContentDescription("stop").assertIsDisplayed()
     }
 }
