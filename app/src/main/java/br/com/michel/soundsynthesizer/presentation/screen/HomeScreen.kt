@@ -5,9 +5,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -32,7 +29,6 @@ fun HomeScreen(
         val wavetableState by viewModel.wavetableStates.collectAsStateWithLifecycle()
         val frequencyState by viewModel.frequencyState.collectAsStateWithLifecycle()
         val volumeState by viewModel.volumeState.collectAsStateWithLifecycle()
-        val playState by viewModel.playState.collectAsStateWithLifecycle()
 
         WavetableSelection(
             modifier = Modifier
@@ -57,21 +53,6 @@ fun HomeScreen(
                 label = volumeState.label,
                 initialValue = HomeViewModel.DEFAULT_VOLUME,
                 onValueChange = viewModel::setVolume
-            )
-        }
-
-        Button(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(
-                    vertical = AppTheme.spacing.large
-                ),
-            onClick = viewModel::togglePayStop,
-            colors = ButtonDefaults.buttonColors(AppTheme.colorScheme.primary)
-        ) {
-            Icon(
-                imageVector = playState.icon,
-                contentDescription = playState.contentDescription
             )
         }
     }

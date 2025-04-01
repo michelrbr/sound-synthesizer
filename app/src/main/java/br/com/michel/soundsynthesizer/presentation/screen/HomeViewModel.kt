@@ -1,15 +1,12 @@
 package br.com.michel.soundsynthesizer.presentation.screen
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.PlayArrow
-import androidx.compose.material.icons.filled.Stop
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import br.com.michel.soundsynthesizer.domain.CoroutineDispatcherProvider
 import br.com.michel.soundsynthesizer.domain.ResourcesProvider
 import br.com.michel.soundsynthesizer.domain.Wavetable
 import br.com.michel.soundsynthesizer.domain.WavetableSynthesizer
-import br.com.michel.soundsynthesizer.presentation.screen.model.PlayButtonState
+import br.com.michel.soundsynthesizer.domain.getColor
 import br.com.michel.soundsynthesizer.presentation.screen.model.SliderState
 import br.com.michel.soundsynthesizer.presentation.screen.model.WavetableState
 import com.michel.soundsynthesizer.R
@@ -75,16 +72,6 @@ class HomeViewModel @Inject constructor(
             )
     }
 
-    val playState: StateFlow<PlayButtonState> by lazy {
-        synthesizer.isPlaying
-            .map { getPlayButtonState(it) }
-            .stateIn(
-                scope = viewModelScope.plus(dispatcherProvider.default),
-                started = SharingStarted.WhileSubscribed(UNSUBSCRIBE_DELAY),
-                initialValue = getPlayButtonState(synthesizer.isPlaying.value)
-            )
-    }
-
     override fun onCleared() {
         synthesizer.close()
         super.onCleared()
@@ -92,7 +79,7 @@ class HomeViewModel @Inject constructor(
 
     fun setWavetable(wavetable: Wavetable) =
         viewModelScope.launch(dispatcherProvider.default) {
-            synthesizer.setWavetable(wavetable)
+            synthesizer.setWavetable(wavetable.takeUnless { it == synthesizer.selectedWavetable.value })
         }
 
     fun setFrequency(frequency: Float) =
@@ -104,25 +91,6 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch(dispatcherProvider.default) {
             synthesizer.setVolume(volume)
         }
-
-    fun togglePayStop() =
-        viewModelScope.launch(dispatcherProvider.default) {
-            if (synthesizer.isPlaying.value) {
-                synthesizer.stop()
-            } else {
-                synthesizer.play()
-            }
-        }
-
-    private fun getPlayButtonState(isPlaying: Boolean) =
-        PlayButtonState(
-            icon = if (isPlaying) Icons.Filled.Stop else Icons.Filled.PlayArrow,
-            contentDescription = if (isPlaying) {
-                resources.getString(R.string.stop_content_description)
-            } else {
-                resources.getString(R.string.play_content_description)
-            }
-        )
 
     private fun getWavetableSelectionState(selected: Wavetable?, wavetables: List<Wavetable>): List<WavetableState> =
         wavetables.map {
@@ -140,14 +108,6 @@ class HomeViewModel @Inject constructor(
             Wavetable.TRIANGLE -> resources.getString(R.string.button_label_triangle)
             Wavetable.SQUARE -> resources.getString(R.string.button_label_square)
             Wavetable.SAW -> resources.getString(R.string.button_label_saw)
-        }
-
-    private fun Wavetable.getColor(): Long =
-        when (this) {
-            Wavetable.SINE -> 0xFF148217
-            Wavetable.TRIANGLE -> 0xFFD6D020
-            Wavetable.SQUARE -> 0xFFB31E19
-            Wavetable.SAW -> 0xFFC96908
         }
 
     companion object {
